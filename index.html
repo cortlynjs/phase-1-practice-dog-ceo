@@ -1,29 +1,74 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Intro to AJAX Practice Tasks</title>
-    <script src="src/index.js" charset="utf-8"></script>
-  </head>
-  <body>
-    <h1>Dog CEO</h1>
-
-    <div id="dog-image-container">
-      <!-- images here -->
-    </div>
-
-    <hr>
-    <label for="select-breed">Filter Breeds That Start with:</label>
-    <select id="breed-dropdown" name="select-breed">
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Dog Breeds</title>
+</head>
+<body>
+  <h1>Dog Breeds</h1>
+  <div>
+    <label for="breed-dropdown">Filter by first letter:</label>
+    <select id="breed-dropdown">
+      <option value="all">All</option>
       <option value="a">a</option>
       <option value="b">b</option>
       <option value="c">c</option>
       <option value="d">d</option>
     </select>
+  </div>
+  <ul id="breed-list"></ul>
+  <script>
+    // Challenge 1
+    const imgUrl = "https://dog.ceo/api/breeds/image/random/4";
+    fetch(imgUrl)
+      .then(response => response.json())
+      .then(data => {
+        const imagesContainer = document.createElement('div');
+        data.message.forEach(imgSrc => {
+          const img = document.createElement('img');
+          img.src = imgSrc;
+          imagesContainer.appendChild(img);
+        });
+        document.body.appendChild(imagesContainer);
+      })
+      .catch(error => console.error(error));
 
-    <ul id="dog-breeds">
+    // Challenge 2
+    const breedUrl = "https://dog.ceo/api/breeds/list/all";
+    fetch(breedUrl)
+      .then(response => response.json())
+      .then(data => {
+        const breedList = document.getElementById('breed-list');
+        Object.keys(data.message).forEach(breed => {
+          const li = document.createElement('li');
+          li.textContent = breed;
+          breedList.appendChild(li);
+        });
+      })
+      .catch(error => console.error(error));
 
-    </ul>
+    // Challenge 3
+    const breedList = document.getElementById('breed-list');
+    breedList.addEventListener('click', event => {
+      if (event.target.tagName === 'LI') {
+        event.target.style.color = 'red';
+      }
+    });
 
-  </body>
+    // Challenge 4
+    const breedDropdown = document.getElementById('breed-dropdown');
+    breedDropdown.addEventListener('change', event => {
+      const letter = event.target.value;
+      const lis = breedList.getElementsByTagName('li');
+      for (let i = 0; i < lis.length; i++) {
+        const li = lis[i];
+        if (letter === 'all' || li.textContent.startsWith(letter)) {
+          li.style.display = 'list-item';
+        } else {
+          li.style.display = 'none';
+        }
+      }
+    });
+  </script>
+</body>
 </html>
